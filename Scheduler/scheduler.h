@@ -1,3 +1,5 @@
+/*Header file for the Scheduler.c file functions*/
+
 #ifndef SCHEDULAR_H
 #define SCHEDULAR_H
 

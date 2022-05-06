@@ -3,16 +3,16 @@
 #include <string.h>
 #include "scheduler.h"
 
-void readFile(char* input, int* totalCylinders, int* currPosition, int* prevPosition, char** data){
+void readFile(char* input, int* totalCylinders, int* currPosition, int* prevPosition, char** data){ /*Reads the file and seperates the char into different variables*/
     char str[1000];
     char* token;
     FILE *in_file = fopen(input, "r");
 
     if (in_file == NULL){
         printf("Couldn't open the file!\n");
-        exit(-1);
+        exit(-1); 
     }
-    else {
+    else { /*We have to set a size for the char so we give 1000 characters which is quite a generous amount*/
        fgets(str, 1000, in_file);
        token = strtok(str, " ");
        *totalCylinders = atoi(token);
@@ -20,12 +20,12 @@ void readFile(char* input, int* totalCylinders, int* currPosition, int* prevPosi
        *currPosition = atoi(token);
        token = strtok(NULL, " ");
        *prevPosition = atoi(token);
-       token = strtok(NULL, "");
+       token = strtok(NULL, ""); /*the request list should not be split at this stage*/
        *data = token;
     }
 }
 
-int* convert(char* c, int* length){
+int* convert(char* c, int* length){ /*Split the request list into a integer variable list.*/
     char dest[1000];
     char* token;
     int* a;
@@ -56,7 +56,7 @@ int* convert(char* c, int* length){
     return a;
 }
 
-int firstComeFirstServe(int* a, int length, int currposition){
+int firstComeFirstServe(int* a, int length, int currposition){ /*First Come First Serve Algorithm*/
     int i;
     int seek = 0;
     int diff;
@@ -71,7 +71,7 @@ int firstComeFirstServe(int* a, int length, int currposition){
     return seek;
 }
 
-int shortestSeekTimeFirst(int* a, int length, int currposition, int totalcylinders){
+int shortestSeekTimeFirst(int* a, int length, int currposition, int totalcylinders){ /*Shortest Seek Time First Algorithm*/
     int i;
     int currTotal = 0;
     int seek = 0;
@@ -123,7 +123,7 @@ int shortestSeekTimeFirst(int* a, int length, int currposition, int totalcylinde
     return seek;
 }
 
-int scan(int* a, int length, int currPosition, int prevPosition, int totalCylinders){
+int scan(int* a, int length, int currPosition, int prevPosition, int totalCylinders){ /*Scan Algorithm*/
     int i;
     int j;
     int temp;
@@ -152,7 +152,7 @@ int scan(int* a, int length, int currPosition, int prevPosition, int totalCylind
     }
 
     if (currPosition < prevPosition){
-        r2l = 1;
+        r2l = 1; /*Right to Left is true! Because head is moving from right to left!*/
     }
 
     if (r2l == 1){
@@ -186,7 +186,7 @@ int scan(int* a, int length, int currPosition, int prevPosition, int totalCylind
             seek += abs(diff); 
         }
 
-    } else {
+    } else { /*if the head is moving from left to right*/
         for (i = 0; i < length; i++){
             if (tempArray[i] < currPosition){
                 pivot = i;
@@ -201,7 +201,7 @@ int scan(int* a, int length, int currPosition, int prevPosition, int totalCylind
 
         for (i = 0; i <= pivot; i++){
             tempOrder[length - i] = tempArray[i];
-        }
+        } 
 
         diff =  tempOrder[0] - currPosition;
         seek += abs(diff);
@@ -218,7 +218,7 @@ int scan(int* a, int length, int currPosition, int prevPosition, int totalCylind
     return seek;
 }
 
-int cscan(int* a, int length, int currPosition, int prevPosition, int totalCyliners){
+int cscan(int* a, int length, int currPosition, int prevPosition, int totalCyliners){ /*CScan algorithm*/
     int* tempArray;
     int* tempOrder;
     int i;
@@ -319,7 +319,7 @@ int cscan(int* a, int length, int currPosition, int prevPosition, int totalCylin
 
 }
 
-int look(int* a, int length, int currPosition, int prevPosition){
+int look(int* a, int length, int currPosition, int prevPosition){ /*Look Algorithm*/
     int i;
     int j;
     int temp;
@@ -406,7 +406,7 @@ int look(int* a, int length, int currPosition, int prevPosition){
     return seek;
 }
 
-int clook(int* a, int length, int currPosition, int prevPosition){
+int clook(int* a, int length, int currPosition, int prevPosition){ /*CLook Algorithm*/
     int* tempArray;
     int* tempOrder;
     int i;
@@ -518,7 +518,7 @@ int main(int argc, char* argv[])
 
         if (strcmp(input, "QUIT") != 0){
             readFile(input, &totalCylinders, &currPosition, &prevPosition, &data);
-            a = convert(data, &length);
+            a = convert(data, &length); /*convert char list into an integer array*/
             fcfs = firstComeFirstServe(a, length, currPosition);
             sstf = shortestSeekTimeFirst(a, length, currPosition, totalCylinders);
             sc = scan(a, length, currPosition, prevPosition, totalCylinders);
