@@ -23,13 +23,13 @@ pthread_mutex_t newLoopLock;
 pthread_cond_t newLoopCond;
 volatile int nextLoop;
 
-void cleanUpHandler(void* lock){
+void cleanUpHandler(void* lock){ /*File Handler to clean*/
     pid_t x = syscall(__NR_gettid);
     printf("%d has terminated\n", x);
     pthread_mutex_unlock((pthread_mutex_t *)lock);
 }
 
-void writeBuffer(int seek, int type){
+void writeBuffer(int seek, int type){ /*Write to the buffer2*/
     pthread_mutex_lock(&bufferLock);
     while (written == 1){
         pthread_cond_wait(&bufferLockCondition, &bufferLock);
@@ -42,7 +42,7 @@ void writeBuffer(int seek, int type){
     pthread_mutex_unlock(&bufferLock);
 }
 
-void waitLock(){
+void waitLock(){ /*Wait on the File Lock*/
     pthread_mutex_lock(&fileReadLock);
     while(fileRead == 0){ 
         pthread_cond_wait(&fileReadCondition, &fileReadLock);
@@ -51,7 +51,7 @@ void waitLock(){
     pthread_mutex_unlock(&fileReadLock);
 }
 
-void waitNextLoop(){
+void waitNextLoop(){ /*Wait until the next Loop is ready*/
     pthread_mutex_lock(&newLoopLock);
     while (nextLoop == 0){
         pthread_cond_wait(&newLoopCond, &newLoopLock);
@@ -59,6 +59,8 @@ void waitNextLoop(){
     printf("\n");
     pthread_mutex_unlock(&newLoopLock);
 }
+
+/* Child Threads A to F execute each seek*/
 
 void * childThreadA(void * tid){
     int i;
@@ -249,7 +251,7 @@ int main(int argc, char* argv[]){
     pthread_t tD;
     pthread_t tE;
     pthread_t tF;
-
+    /*Initialize the Mutex's and Conditions*/
     pthread_mutex_init(&fileReadLock, NULL);
     pthread_cond_init(&fileReadCondition, NULL);
     pthread_mutex_init(&bufferLock, NULL);
